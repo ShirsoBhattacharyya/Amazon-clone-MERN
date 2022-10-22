@@ -1,2 +1,2 @@
-# TMart-ecommerce-MERN
+# Eldorado-ecommerce-MERN
 
