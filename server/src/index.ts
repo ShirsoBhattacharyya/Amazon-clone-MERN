@@ -9,7 +9,7 @@ server.use(express.json());
 server.use('/api/users',userRoutes);
 server.use('/api/auth',authRoutes);
 server.get('/api/',(req:Request,res:Response)=>{
-    res.send('Welcome to Eldorado Api.')
+    res.send('Welcome to Tweek Ecommerce Api.')
 })
 server.listen(PORT,async()=>{
     await connect();
