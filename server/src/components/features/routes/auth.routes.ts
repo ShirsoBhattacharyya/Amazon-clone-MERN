@@ -5,6 +5,7 @@ import CryptoJS from 'crypto-js';
 import * as dotenv from 'dotenv';
 dotenv.config();
 const router=express.Router();
+
 //REGISTER
 const secretPassword=process.env.PASS_SECRET;
 router.post('/register',async(req,res)=>{
@@ -38,4 +39,5 @@ router.post('/login',async(req,res)=>{
         res.status(500).json(error);
     }
 })
+
 export default router;

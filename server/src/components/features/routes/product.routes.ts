@@ -1,11 +1,68 @@
 import express from 'express';
-import User from '../models/user.model';
+import verifyAdmin from '../middlewares/verifyAdmin';
+import Product from '../models/product.model';
 const router=express.Router();
-router.get('/user',(req,res)=>{
-    res.send('I am a user');
+
+//CREATE
+router.post('/',verifyAdmin,async(req,res)=>{
+    const newProduct=new Product(req.body);
+    try {
+        const savedProduct=await newProduct.save();
+        res.status(200).json(savedProduct);
+    } catch (error) {
+        res.status(500).json(error);
+    }
 })
-router.post('/newuser',(req,res)=>{
-    const user=req.body;
-    res.status(200).send(user);
+//UPDATE
+router.put('/:id',verifyAdmin,async(req,res)=>{
+      try {
+        const updatedProduct = await Product.findByIdAndUpdate(
+          req.params.id,
+          {
+            $set: req.body,
+          },
+          { new: true }
+        );
+        res.status(200).json(updatedProduct);
+      } catch (error) {
+        res.status(500).json(error);
+      }
 })
+//DELETE
+router.delete("/:id", verifyAdmin, async (req, res) => {
+    try {
+      await Product.findByIdAndDelete(req.params.id);
+      res.status(200).json("User has been deleted...");
+    } catch (err) {
+      res.status(500).json(err);
+    }
+});
+//GET PRODUCT
+router.get("/find/:id", async (req, res) => {
+    try {
+      const product:any = await Product.findById(req.params.id);
+      res.status(200).json(product);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+});
+//GET ALL PRODUCTS
+router.get("/", async (req, res) => {
+    const newquery = req.query.new;
+    const categoryquery=req.query.category;
+    try {
+      let products;
+      if(newquery){
+        products=await Product.find().sort({createdAt:-1}).limit(5);
+      }else if(categoryquery){
+        products=await Product.find({categories:{$in:[categoryquery]}}).limit(5);
+      }else{
+        products=await Product.find();
+      }
+      res.status(200).json(products);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+});
+  
 export default router;
